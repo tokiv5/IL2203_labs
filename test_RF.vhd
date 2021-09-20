@@ -10,14 +10,14 @@ architecture test_RF of test is
         port (
             clk,reset,write,readA,readB:IN std_logic;
             WD:IN std_logic_vector(N-1 downto 0);
-            WAddr,RA,RB:IN std_logic_vector(2**M-1 downto 0);
+            WAddr,RA,RB:IN std_logic_vector(M-1 downto 0);
             QA,QB:OUT std_logic_vector(N-1 downto 0)
         );
     end component;
     
     signal clk: std_logic:='0';
     signal reset,write,readA,readB: std_logic;
-    signal WAddr,RA, RB: std_logic_vector(2**M-1 downto 0);
+    signal WAddr,RA, RB: std_logic_vector(M-1 downto 0);
     signal WD: std_logic_vector(N-1 downto 0);
     signal QA,QB: std_logic_vector(N-1 downto 0);
     
@@ -37,7 +37,7 @@ begin
     begin
         wait for 30 ns;
         for i in values'range loop
-            WAddr <= conv_std_logic_vector(i,2**M);
+            WAddr <= conv_std_logic_vector(i,M);
             WD <= conv_std_logic_vector(42,N);
             wait for 10 ns;
             WD <= conv_std_logic_vector(85,N);
@@ -50,8 +50,8 @@ begin
     read: process
     begin
         for j in values'range loop
-            RA <= conv_std_logic_vector(j,2**M);
-            RB <= conv_std_logic_vector(7-j,2**M);
+            RA <= conv_std_logic_vector(j,M);
+            RB <= conv_std_logic_vector(7-j,M);
             wait for 1 ns;
             if (readA='0') then 
                 assert (QA=conv_std_logic_vector(0,N))
