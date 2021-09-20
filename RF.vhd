@@ -33,10 +33,14 @@ begin
             end if;
         end if;
     end process;
-    
+                                                                                                                                             
+    -- Read:
+    -- * The spec said "output should updated immediately" about readA and readB
     QA <= registers(conv_integer(unsigned(RA))) when readA = '1' else (others => '0');
     QB <= registers(conv_integer(unsigned(RB))) when readB = '1' else (others => '0');
-
+        
+    -- Read:
+    -- * If sync signal                                                         
     -- process(clk)
     -- begin
     --     if clk'event and (clk='0') then -- Negative flank
@@ -50,23 +54,6 @@ begin
     --         elsif (readB='0') then
     --             QB <= (others=>'0');
     --         end if;
-    --     end if;
-    -- end process;
-                                                                                                                                                                                                                          
-
-    -- Read:
-    -- * The spec said "output should updated immediately" about readA and readB
-    -- process(readA,readB,RA,RB,clk) 
-    -- begin
-    --     if (readA='1') then
-    --         QA <= registers(conv_integer(unsigned(RA)));
-    --     elsif (readA='0') then
-    --         QA <= (others=>'0');
-    --     end if;
-    --     if (readB='1') then
-    --         QB <= registers(conv_integer(unsigned(RB)));
-    --     elsif (readB='0') then
-    --         QB <= (others=>'0');
     --     end if;
     -- end process;
     

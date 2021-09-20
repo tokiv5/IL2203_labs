@@ -12,7 +12,7 @@ entity datapath is
         WAddr, RA, RB:IN std_logic_vector(M-1 downto 0);
         Z_flag, N_flag, O_flag: OUT std_logic;
         output_data: OUT std_logic_vector(N-1 downto 0);
-        out_clk, reset_t: OUT std_logic
+        out_clk, reset_t: OUT std_logic 
     );
 end entity datapath;
 
@@ -57,6 +57,7 @@ architecture data_flow of datapath is
     signal clk_1: std_logic;
     signal WD, tmp_out, QA, QB: std_logic_vector(N-1 downto 0);
 begin
+    -- Uncomment this block to run on board:
     C0: divider
     port map(clk_50M => clk,
     clk_1 => clk_1);
@@ -71,7 +72,7 @@ begin
 
     RF0: RF
     generic map(N => N, M => M)
-    port map(clk => clk_1,
+    port map(clk => clk_1,   -- use clk_1 to run on board
     reset => reset,
     write => write,
     readA => readA,
@@ -85,7 +86,7 @@ begin
 
     ALU0: ALU
     generic map(N => N)
-    port map(clk => clk_1, -- clk
+    port map(clk => clk_1, -- use clk_1 to run on board
     reset => '0',
     en => '1',
     op => "000",
@@ -97,6 +98,6 @@ begin
     O_flag => O_flag);
 
     output_data <= tmp_out when OE = '1' else (others => 'Z');
-    reset_t <= reset;
+    reset_t <= reset; -- reset_t is for specific buttons testing
     
 end architecture data_flow; 
