@@ -6,6 +6,7 @@ use IEEE.std_logic_arith.all;
 architecture test_ALU of test is
     constant N:integer:=4;
     component ALU
+        generic(N:integer:=4);
         port(
             clk,reset,en: IN std_logic;
             op: IN std_logic_vector(2 downto 0);
@@ -30,8 +31,9 @@ architecture test_ALU of test is
     constant values_op:int_array:=(0,1,2,3,4,5,6,7);
     
 begin
-    DUT: ALU port map(clk,reset,en,op, a, b, y, Z_flag, N_flag, O_flag);
-    -- generic map(N)
+    DUT: ALU 
+        generic map(N => N)
+        port map(clk,reset,en,op, a, b, y, Z_flag, N_flag, O_flag);
 
     -- generate signals:
     clk <= not clk after 5 ns;
@@ -117,10 +119,23 @@ begin
                     assert(a=y)
                         report "MOV failed"
                         severity warning;
-                when "111" => --zero
-                    assert(y=0)
-                        report "ZERO failed"
+                when "111" => -- incr 1 for lab3
+                    assert(a+conv_std_logic_vector(1,N)=y)
+                        report "INCR failed"
                         severity warning;
+                    if (conv_integer(a)+1 /= conv_integer(y)) then
+                        assert(O_flag='1')
+                            report "O_flag failed"
+                            severity warning;   
+                    else
+                        assert(O_flag='0')
+                            report "O_flag failed"
+                            severity warning;
+                    end if;
+                -- when "111" => -- zero function in lab1 and lab2
+                --     assert(y=0)
+                --         report "ZERO failed"
+                --         severity warning;
                 when others =>
                     assert(FALSE)
                         report "OP invalid"

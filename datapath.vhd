@@ -7,12 +7,11 @@ entity datapath is
     generic(N:integer:=4;
             M:integer:=3);
     port (
-        input_data: IN std_logic_vector(N-1 downto 0);
-        clk, reset, write, readA, readB, IE, OE:IN std_logic;
+        input_data, offset: IN std_logic_vector(N-1 downto 0);
+        clk, reset, write, readA, readB, IE, OE, bypassA, bypassB:IN std_logic;
         WAddr, RA, RB:IN std_logic_vector(M-1 downto 0);
-        Z_flag, N_flag, O_flag: OUT std_logic;
         output_data: OUT std_logic_vector(N-1 downto 0);
-        out_clk, reset_t: OUT std_logic 
+        Z_flag, N_flag, O_flag, out_clk: OUT std_logic  -- add reset_t here if want to show if the rst button works
     );
 end entity datapath;
 
@@ -54,14 +53,17 @@ architecture data_flow of datapath is
         y: OUT std_logic_vector(N-1 downto 0)
     );
     end component;
-    signal clk_1: std_logic;
-    signal WD, tmp_out, QA, QB: std_logic_vector(N-1 downto 0);
+
+    signal clk_1, readA_orgate: std_logic;
+    signal WD, tmp_out, QA, QB, A, B: std_logic_vector(N-1 downto 0);
+    signal RA_orgate: std_logic_vector(M-1 downto 0);
+
 begin
     -- Uncomment this block to run on board:
-    C0: divider
-    port map(clk_50M => clk,
-    clk_1 => clk_1);
-    out_clk<=clk_1;
+    -- C0: divider
+    -- port map(clk_50M => clk,
+    -- clk_1 => clk_1);
+    -- out_clk<=clk_1; -- To show the clock by a LED light:
 
     M0: mux
     generic map(N => N)
@@ -70,34 +72,55 @@ begin
     in2 => input_data,
     y => WD);
 
+    M1: mux
+    generic map(N => N)
+    port map(sel => bypassA,
+    in1 => QA,
+    in2 => offset,
+    y => A);
+
+    M2: mux
+    generic map(N => N)
+    port map(sel => bypassB,
+    in1 => QB,
+    in2 => offset,
+    y => B);
+
     RF0: RF
     generic map(N => N, M => M)
-    port map(clk => clk_1,   -- use clk_1 to run on board
+    port map(clk => clk,   -- use clk_1 to run on board
     reset => reset,
     write => write,
-    readA => readA,
+    readA => readA_orgate,
     readB => readB,
     WD => WD,
     WAddr => WAddr,
-    RA => RA,
+    RA => RA_orgate,
     RB => RB,
     QA => QA,
     QB => QB);
 
     ALU0: ALU
     generic map(N => N)
-    port map(clk => clk_1, -- use clk_1 to run on board
+    port map(clk => clk, -- use clk_1 to run on board
     reset => '0',
     en => '1',
-    op => "000",
-    a => QA,
-    b => QB,
+    op => "111",
+    a => A,
+    b => B,
     y => tmp_out,
     Z_flag => Z_flag,
     N_flag => N_flag,
     O_flag => O_flag);
 
+    -- Input reg:
+    RA_orgate <= RA; -- ? when bypass = '1' else conv_std_logic_vector(0,N)
+    readA_orgate <= readA or bypassB; -- It should be a permanent '1'
+    
+    -- Ouput reg:
     output_data <= tmp_out when OE = '1' else (others => 'Z');
-    reset_t <= reset; -- reset_t is for specific buttons testing
+
+    -- Explicit signals for testing buttons:
+    -- reset_t <= reset; 
     
 end architecture data_flow; 

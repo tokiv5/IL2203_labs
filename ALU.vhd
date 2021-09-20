@@ -88,11 +88,22 @@ begin
                 if (tmp_y(N-1) = '1') then tmp_n <= '1';
                 else tmp_n <= '0';
                 end if;
-            when "111" => --zero
-                tmp_y <= conv_std_logic_vector(0,N);
-                tmp_z <= '1';
-                tmp_n <= '0';
-                tmp_o <= '0';
+            when "111" => -- incr 1 for lab3
+                tmp_y <= a + conv_std_logic_vector(1,N);
+                if (tmp_y = conv_std_logic_vector(0,N)) then tmp_z <= '1';
+                else tmp_z <= '0';
+                end if;
+                if (tmp_y(N-1) = '1') then tmp_n <= '1';
+                else tmp_n <= '0';
+                end if;
+                if (a(N-1) = '0' and tmp_y(N-1) /= a(N-1)) then tmp_o <= '1';
+                else tmp_o <= '0';
+                end if;
+            -- when "111" => -- zero function in lab1 and lab2
+            --     tmp_y <= conv_std_logic_vector(0,N);
+            --     tmp_z <= '1';
+            --     tmp_n <= '0';
+            --     tmp_o <= '0';
             when others =>
                 tmp_y <= conv_std_logic_vector(0,N);
                 tmp_z <= '1';
