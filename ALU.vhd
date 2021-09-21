@@ -96,7 +96,7 @@ begin
                 if (tmp_y(N-1) = '1') then tmp_n <= '1';
                 else tmp_n <= '0';
                 end if;
-                if (a(N-1) = '0' and tmp_y(N-1) /= a(N-1)) then tmp_o <= '1';
+                if (a(N-1) = '0' and tmp_y(N-1) = '1') then tmp_o <= '1';
                 else tmp_o <= '0';
                 end if;
             -- when "111" => -- zero function in lab1 and lab2
