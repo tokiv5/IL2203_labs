@@ -118,7 +118,16 @@ begin
     readA_orgate <= readA or bypassB; -- It should be a permanent '1'
     
     -- Ouput reg:
-    output_data <= tmp_out when OE = '1' else (others => 'Z');
+    process(clk, tmp_out, OE)
+    begin
+        if (clk'event and clk='1') then
+            if OE ='1' then
+                output_data <= tmp_out;
+            else
+                output_data <= (others => 'Z');
+            end if;
+        end if;
+    end process;
 
     -- Explicit signals for testing buttons:
     -- reset_t <= reset; 
