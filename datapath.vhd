@@ -7,8 +7,8 @@ entity datapath is
     generic(N:integer:=4;
             M:integer:=3);
     port (
-        input_data: IN std_logic_vector(N-1 downto 0);
-        clk, reset, write, readA, readB, IE, OE:IN std_logic;
+        input_data, offset: IN std_logic_vector(N-1 downto 0);
+        clk, reset, write, readA, readB, IE, OE, byPassA, byPassB:IN std_logic;
         WAddr, RA, RB:IN std_logic_vector(M-1 downto 0);
         Z_flag, N_flag, O_flag: OUT std_logic;
         output_data: OUT std_logic_vector(N-1 downto 0);
@@ -16,7 +16,8 @@ entity datapath is
     );
 end entity datapath;
 
-architecture data_flow of datapath is
+architecture data_flow of datapath is 
+
     component RF
     generic(N:integer:=4;
             M:integer:=3);
@@ -54,9 +55,14 @@ architecture data_flow of datapath is
         y: OUT std_logic_vector(N-1 downto 0)
     );
     end component;
-    signal clk_1: std_logic;
-    signal WD, tmp_out, QA, QB: std_logic_vector(N-1 downto 0);
+    signal clk_1, readA_inside: std_logic;
+    signal WD, tmp_out, QA, QB, ALU_inA, ALU_inB: std_logic_vector(N-1 downto 0);
+    signal RA_inside: std_logic_vector(M-1 downto 0); -- RA will be set to PC register for branch instructions
 begin
+
+    RA_inside <= RA when byPassB = '0' else (others => '1');
+    readA_inside <= readA when byPassB = '0' else '1';
+
     C0: divider
     port map(clk_50M => clk,
     clk_1 => clk_1);
@@ -69,16 +75,30 @@ begin
     in2 => input_data,
     y => WD);
 
+    M1: mux 
+    generic map(N => N)
+    port map(sel => byPassA,
+    in1 => QA,
+    in2 => offset,
+    y => ALU_inA); -- mux to decide the input of ALU A. For LD, it is outer input from memory, else is from register
+
+    M2: mux
+    generic map(N => N)
+    port map(sel => byPassB,
+    in1 => QB,
+    in2 => offset,
+    y => ALU_inB); -- mux to decide the input of ALU B. For branch, it is outer offset for jump target, else is from register
+
     RF0: RF
     generic map(N => N, M => M)
     port map(clk => clk_1,
     reset => reset,
     write => write,
-    readA => readA,
+    readA => readA_inside,
     readB => readB,
     WD => WD,
     WAddr => WAddr,
-    RA => RA,
+    RA => RA_inside,
     RB => RB,
     QA => QA,
     QB => QB);
@@ -89,8 +109,8 @@ begin
     reset => '0',
     en => '1',
     op => "000",
-    a => QA,
-    b => QB,
+    a => ALU_inA,
+    b => ALU_inB,
     y => tmp_out,
     Z_flag => Z_flag,
     N_flag => N_flag,

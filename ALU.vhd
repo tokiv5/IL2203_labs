@@ -88,11 +88,17 @@ begin
                 if (tmp_y(N-1) = '1') then tmp_n <= '1';
                 else tmp_n <= '0';
                 end if;
-            when "111" => --zero
-                tmp_y <= conv_std_logic_vector(0,N);
-                tmp_z <= '1';
-                tmp_n <= '0';
-                tmp_o <= '0';
+            when "111" => --increment 1
+                tmp_y <= a + '1';
+                if (tmp_y = conv_std_logic_vector(0,N)) then tmp_z <= '1';
+                else tmp_z <= '0';
+                end if;
+                if (tmp_y(N-1) = '1') then tmp_n <= '1';
+                else tmp_n <= '0';
+                end if;
+                if (tmp_y(N-1) = '1' and tmp_y((N-2) downto 0) = conv_std_logic_vector(0,N-1)) then tmp_o <= '1';
+                else tmp_o <= '0';
+                end if;
             when others =>
                 tmp_y <= conv_std_logic_vector(0,N);
                 tmp_z <= '1';
