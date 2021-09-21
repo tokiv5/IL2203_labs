@@ -116,7 +116,18 @@ begin
     N_flag => N_flag,
     O_flag => O_flag);
 
-    output_data <= tmp_out when OE = '1' else (others => 'Z');
+    process(clk)
+    begin
+    if clk'event and clk = '1' then
+        if OE = '1' then
+            output_data <= tmp_out;
+        else
+            output_data <= (others => 'Z');
+                
+        end if ;
+        --output_data <= tmp_out when OE = '1' else (others => 'Z');
+    end if ;
+    end process;
     reset_t <= reset;
     
 end architecture data_flow; 

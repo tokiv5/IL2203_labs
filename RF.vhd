@@ -16,7 +16,7 @@ end entity RF;
 
 architecture data_flow of RF is
     type registerFile is array(0 to 2**M-1) of std_logic_vector(N-1 downto 0);
-    signal registers: registerFile;
+    signal registers: registerFile:= (others => (others => '0'));
     
 begin
     -- Write:
