@@ -22,7 +22,7 @@ begin
     -- Write:
     process(clk, reset)
     begin
-        if (reset = '0') then
+        if (reset = '1') then -- use 0 here to run on the board
             for i in registers'range loop
                 registers(i) <= (others=>'0');
             end loop;
