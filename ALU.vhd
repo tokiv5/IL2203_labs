@@ -18,7 +18,7 @@ architecture structure of ALU is
     signal tmp_y: std_logic_vector(N-1 downto 0) := conv_std_logic_vector(0,N);
     signal tmp_z,tmp_n,tmp_o:std_logic:='0';
 begin
-    process(op, a, b)
+    process(op, a, b, tmp_y)
     begin
         case op is
             when "000" => --add
