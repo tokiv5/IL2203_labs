@@ -10,7 +10,7 @@ architecture test_datapath of test is
         generic(N:integer; M:integer);
         port (
             input_data, offset: IN std_logic_vector(N-1 downto 0);
-            clk, reset, write, readA, readB, IE, OE, bypassA, bypassB:IN std_logic;
+            clk, reset, write, readA, readB, IE, OE, byPassA, byPassB:IN std_logic;
             WAddr, RA, RB:IN std_logic_vector(M-1 downto 0);
             output_data: OUT std_logic_vector(N-1 downto 0);
             Z_flag, N_flag, O_flag, out_clk: OUT std_logic 
@@ -18,7 +18,7 @@ architecture test_datapath of test is
     end component;
 
     signal reset,clk: std_logic:='0';
-    signal write, readA, readB, OE, IE, bypassA, bypassB: std_logic:='1';
+    signal write, readA, readB, OE, IE, byPassA, byPassB: std_logic:='1';
     signal Z_flag, N_flag, O_flag, out_clk: std_logic;
     signal WAddr, RA, RB: std_logic_vector(M-1 downto 0);
     signal input_data, output_data, offset: std_logic_vector(N-1 downto 0);
@@ -29,7 +29,7 @@ architecture test_datapath of test is
         DUT: datapath 
             generic map(N,M)
             port map(input_data, offset, 
-                clk, reset, write, readA, readB, IE, OE, bypassA, bypassB, 
+                clk, reset, write, readA, readB, IE, OE, byPassA, byPassB, 
                 WAddr, RA, RB, 
                 output_data,
                 Z_flag, N_flag, O_flag, out_clk);
@@ -37,7 +37,7 @@ architecture test_datapath of test is
         clk <= not clk after 5 ns;
         IE <= '0' after 100 ns;
         reset <= '1' after 3 ns, '0' after 8 ns;
-        bypassA <= '0' after 20 ns;
+        byPassA <= '0' after 20 ns;
 
         WAddr <= conv_std_logic_vector(0,M); -- , conv_std_logic_vector(1,M) after 30 ns;
         RA <= conv_std_logic_vector(0, M);

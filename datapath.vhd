@@ -8,7 +8,7 @@ entity datapath is
             M:integer:=3);
     port (
         input_data, offset: IN std_logic_vector(N-1 downto 0);
-        clk, reset, write, readA, readB, IE, OE, bypassA, bypassB:IN std_logic;
+        clk, reset, write, readA, readB, IE, OE, byPassA, byPassB:IN std_logic;
         WAddr, RA, RB:IN std_logic_vector(M-1 downto 0);
         output_data: OUT std_logic_vector(N-1 downto 0);
         Z_flag, N_flag, O_flag, out_clk: OUT std_logic  -- add reset_t here if want to show if the rst button works
@@ -54,9 +54,9 @@ architecture data_flow of datapath is
     );
     end component;
 
-    signal clk_1, readA_orgate: std_logic;
+    signal clk_1, readA_inside, Z_flag_reg, N_flag_reg, O_flag_reg: std_logic;
     signal WD, tmp_out, QA, QB, A, B: std_logic_vector(N-1 downto 0);
-    signal RA_orgate: std_logic_vector(M-1 downto 0);
+    signal RA_inside: std_logic_vector(M-1 downto 0);
 
 begin
     -- Uncomment this block to run on board:
@@ -74,14 +74,14 @@ begin
 
     M1: mux
     generic map(N => N)
-    port map(sel => bypassA,
+    port map(sel => byPassA,
     in1 => QA,
     in2 => offset,
     y => A);
 
     M2: mux
     generic map(N => N)
-    port map(sel => bypassB,
+    port map(sel => byPassB,
     in1 => QB,
     in2 => offset,
     y => B);
@@ -91,11 +91,11 @@ begin
     port map(clk => clk,   -- use clk_1 to run on board
     reset => reset,
     write => write,
-    readA => readA_orgate,
+    readA => readA_inside,
     readB => readB,
     WD => WD,
     WAddr => WAddr,
-    RA => RA_orgate,
+    RA => RA_inside,
     RB => RB,
     QA => QA,
     QB => QB);
@@ -109,18 +109,21 @@ begin
     a => A,
     b => B,
     y => tmp_out,
-    Z_flag => Z_flag,
-    N_flag => N_flag,
-    O_flag => O_flag);
+    Z_flag => Z_flag_reg,
+    N_flag => N_flag_reg,
+    O_flag => O_flag_reg);
 
-    -- Input reg:
-    RA_orgate <= RA; -- ? when bypass = '1' else conv_std_logic_vector(0,N)
-    readA_orgate <= readA or bypassB; -- It should be a permanent '1'
+    -- Input:
+    RA_inside <= RA when byPassB = '0' else (others => '1');
+    readA_inside <= readA when byPassB = '0' else '1';
     
-    -- Ouput reg:
-    process(clk, tmp_out, OE)
+    -- Output reg:
+    process(clk, tmp_out, OE, Z_flag_reg, N_flag_reg, O_flag_reg)
     begin
         if (clk'event and clk='1') then
+            Z_flag  <= Z_flag_reg;
+            N_flag  <= N_flag_reg;
+            O_flag  <= O_flag_reg;
             if OE ='1' then
                 output_data <= tmp_out;
             else
