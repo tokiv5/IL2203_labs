@@ -32,7 +32,11 @@ architecture test_datapath of test is
         DUT: datapath 
             generic map(N,M)
             port map(input_data, offset, 
+<<<<<<< HEAD
                 clk, reset, write, readA, readB, IE, OE, byPassA, byPassB, byPassW,
+=======
+                clk, reset, write, readA, readB, IE, OE, byPassA, byPassB, 
+>>>>>>> 258343501442a028cf2a43f74c69ffa02e01c289
                 WAddr, RA, RB, 
                 op,
                 output_data,
@@ -47,7 +51,10 @@ architecture test_datapath of test is
         IE <= '1', '0' after 50 ns;
         byPassA <= '0';
         byPassB <= '1';
+<<<<<<< HEAD
         byPassW <= '0';
+=======
+>>>>>>> 258343501442a028cf2a43f74c69ffa02e01c289
         write <= '1';
         readA <= '1';
         readB <= '1';

@@ -57,7 +57,11 @@ architecture data_flow of datapath is
     );
     end component;
 
+<<<<<<< HEAD
     signal clk_1, readA_inside, write_inside: std_logic; -- removed Z_flag_reg, N_flag_reg, O_flag_reg
+=======
+    signal clk_1, readA_inside, write_inside, Z_flag_reg, N_flag_reg, O_flag_reg: std_logic;
+>>>>>>> 258343501442a028cf2a43f74c69ffa02e01c289
     signal WD, tmp_out, QA, QB, A, B: std_logic_vector(N-1 downto 0);
     signal RA_inside, WAddr_inside: std_logic_vector(M-1 downto 0);
 begin
@@ -111,16 +115,23 @@ begin
     a => A,
     b => B,
     y => tmp_out,
+<<<<<<< HEAD
     -- Z_flag => Z_flag_reg,
     -- N_flag => N_flag_reg,
     -- O_flag => O_flag_reg); -- remove the output registers from the ALU
     Z_flag => Z_flag,
     N_flag => N_flag,
     O_flag => O_flag);
+=======
+    Z_flag => Z_flag_reg,
+    N_flag => N_flag_reg,
+    O_flag => O_flag_reg);
+>>>>>>> 258343501442a028cf2a43f74c69ffa02e01c289
 
     -- Input:
     RA_inside <= RA when byPassB = '0' else (others => '1');
     readA_inside <= readA when byPassB = '0' else '1';
+<<<<<<< HEAD
     WAddr_inside <= WAddr when byPassW = '0' else (others => '1');
     write_inside <= write when byPassW = '0' else '1'; -- when byPassA = '0' else '1';
     
@@ -131,6 +142,18 @@ begin
             -- Z_flag  <= Z_flag_reg;
             -- N_flag  <= N_flag_reg;
             -- O_flag  <= O_flag_reg;
+=======
+    WAddr_inside <= WAddr when byPassB = '0' else (others => '1');
+    write_inside <= write; -- when byPassA = '0' else '1';
+    
+    -- Output reg:
+    process(clk, tmp_out, OE, Z_flag_reg, N_flag_reg, O_flag_reg)
+    begin
+        if (clk'event and clk='1') then
+            Z_flag  <= Z_flag_reg;
+            N_flag  <= N_flag_reg;
+            O_flag  <= O_flag_reg;
+>>>>>>> 258343501442a028cf2a43f74c69ffa02e01c289
             if OE ='1' then
                 output_data <= tmp_out;
             else
