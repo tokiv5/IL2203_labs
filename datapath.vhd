@@ -8,10 +8,13 @@ entity datapath is
             M:integer:=3);
     port (
         input_data, offset: IN std_logic_vector(N-1 downto 0);
-        clk, reset, write, readA, readB, IE, OE, bypassA, bypassB:IN std_logic;
+        clk, reset, write, readA, readB, IE, OE, byPassA, byPassB, byPassW:IN std_logic;
         WAddr, RA, RB:IN std_logic_vector(M-1 downto 0);
+        op: IN std_logic_vector(2 downto 0);
         output_data: OUT std_logic_vector(N-1 downto 0);
-        Z_flag, N_flag, O_flag, out_clk: OUT std_logic  -- add reset_t here if want to show if the rst button works
+        Z_flag, N_flag, O_flag: OUT std_logic
+        -- out_clk: OUT std_logic  for show a slow clock on the board
+        -- add reset_t here if want to show if the rst button works
     );
 end entity datapath;
 
@@ -54,10 +57,9 @@ architecture data_flow of datapath is
     );
     end component;
 
-    signal clk_1, readA_orgate: std_logic;
+    signal clk_1, readA_inside, write_inside: std_logic; -- removed Z_flag_reg, N_flag_reg, O_flag_reg
     signal WD, tmp_out, QA, QB, A, B: std_logic_vector(N-1 downto 0);
-    signal RA_orgate: std_logic_vector(M-1 downto 0);
-
+    signal RA_inside, WAddr_inside: std_logic_vector(M-1 downto 0);
 begin
     -- Uncomment this block to run on board:
     -- C0: divider
@@ -74,14 +76,14 @@ begin
 
     M1: mux
     generic map(N => N)
-    port map(sel => bypassA,
+    port map(sel => byPassA,
     in1 => QA,
     in2 => offset,
     y => A);
 
     M2: mux
     generic map(N => N)
-    port map(sel => bypassB,
+    port map(sel => byPassB,
     in1 => QB,
     in2 => offset,
     y => B);
@@ -90,12 +92,12 @@ begin
     generic map(N => N, M => M)
     port map(clk => clk,   -- use clk_1 to run on board
     reset => reset,
-    write => write,
-    readA => readA_orgate,
+    write => write_inside,
+    readA => readA_inside,
     readB => readB,
     WD => WD,
-    WAddr => WAddr,
-    RA => RA_orgate,
+    WAddr => WAddr_inside,
+    RA => RA_inside,
     RB => RB,
     QA => QA,
     QB => QB);
@@ -103,24 +105,32 @@ begin
     ALU0: ALU
     generic map(N => N)
     port map(clk => clk, -- use clk_1 to run on board
-    reset => '0',
+    reset => reset,
     en => '1',
-    op => "111",
+    op => op,
     a => A,
     b => B,
     y => tmp_out,
+    -- Z_flag => Z_flag_reg,
+    -- N_flag => N_flag_reg,
+    -- O_flag => O_flag_reg); -- remove the output registers from the ALU
     Z_flag => Z_flag,
     N_flag => N_flag,
     O_flag => O_flag);
 
-    -- Input reg:
-    RA_orgate <= RA; -- ? when bypass = '1' else conv_std_logic_vector(0,N)
-    readA_orgate <= readA or bypassB; -- It should be a permanent '1'
+    -- Input:
+    RA_inside <= RA when byPassB = '0' else (others => '1');
+    readA_inside <= readA when byPassB = '0' else '1';
+    WAddr_inside <= WAddr when byPassW = '0' else (others => '1');
+    write_inside <= write when byPassW = '0' else '1'; -- when byPassA = '0' else '1';
     
-    -- Ouput reg:
-    process(clk, tmp_out, OE)
+    -- Output reg:
+    process(clk, tmp_out, OE) -- , Z_flag_reg, N_flag_reg, O_flag_reg
     begin
         if (clk'event and clk='1') then
+            -- Z_flag  <= Z_flag_reg;
+            -- N_flag  <= N_flag_reg;
+            -- O_flag  <= O_flag_reg;
             if OE ='1' then
                 output_data <= tmp_out;
             else
