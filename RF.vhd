@@ -22,7 +22,7 @@ begin
     -- Write:
     process(clk, reset)
     begin
-        if (reset = '0') then
+        if (reset = '1') then
             for i in registers'range loop
                 registers(i) <= (others=>'0');
             end loop;
@@ -31,11 +31,13 @@ begin
             if (write = '1') then
                 registers(conv_integer(unsigned(WAddr))) <= WD;
             end if;
+            --PC <= registers(2**M-1);
         end if;
     end process;
     
     QA <= registers(conv_integer(unsigned(RA))) when readA = '1' else (others => '0');
     QB <= registers(conv_integer(unsigned(RB))) when readB = '1' else (others => '0');
+    
 
     -- process(clk)
     -- begin

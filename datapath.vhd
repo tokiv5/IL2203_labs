@@ -8,11 +8,13 @@ entity datapath is
             M:integer:=3);
     port (
         input_data, offset: IN std_logic_vector(N-1 downto 0);
-        clk, reset, write, readA, readB, IE, OE, byPassA, byPassB:IN std_logic;
+        --PC: OUT std_logic_vector(N-1 downto 0);
+        clk, reset, write, readA, readB, IE, OE, byPassA, byPassB, byPassW:IN std_logic;
+        op: IN std_logic_vector(2 downto 0);
         WAddr, RA, RB:IN std_logic_vector(M-1 downto 0);
         Z_flag, N_flag, O_flag: OUT std_logic;
         output_data: OUT std_logic_vector(N-1 downto 0);
-        out_clk, reset_t: OUT std_logic
+        out_clk: OUT std_logic
     );
 end entity datapath;
 
@@ -40,12 +42,12 @@ architecture data_flow of datapath is
     );
     end component;
 
-    component divider
-    port(
-        clk_50M: IN std_logic;
-        clk_1: OUT std_logic
-    );
-    end component;
+    -- component divider
+    -- port(
+    --     clk_50M: IN std_logic;
+    --     clk_1: OUT std_logic
+    -- );
+    -- end component;
 
     component mux
     generic(N:integer:=4);
@@ -55,18 +57,19 @@ architecture data_flow of datapath is
         y: OUT std_logic_vector(N-1 downto 0)
     );
     end component;
-    signal clk_1, readA_inside: std_logic;
-    signal WD, tmp_out, QA, QB, ALU_inA, ALU_inB: std_logic_vector(N-1 downto 0);
-    signal RA_inside: std_logic_vector(M-1 downto 0); -- RA will be set to PC register for branch instructions
+    signal readA_inside: std_logic;
+    signal WD, tmp_out, QA, QB, ALU_inA, ALU_inB, tmp_z, tmp_n, tmp_o: std_logic_vector(N-1 downto 0);
+    signal RA_inside, WA_inside: std_logic_vector(M-1 downto 0); -- RA will be set to PC register for branch instructions
 begin
 
     RA_inside <= RA when byPassB = '0' else (others => '1');
+    WA_inside <= WAddr when byPassW = '0' else (others => '1');
     readA_inside <= readA when byPassB = '0' else '1';
 
-    C0: divider
-    port map(clk_50M => clk,
-    clk_1 => clk_1);
-    out_clk<=clk_1;
+    -- C0: divider
+    -- port map(clk_50M => clk,
+    -- clk_1 => clk_1);
+    -- out_clk<=clk_1;
 
     M0: mux
     generic map(N => N)
@@ -91,43 +94,44 @@ begin
 
     RF0: RF
     generic map(N => N, M => M)
-    port map(clk => clk_1,
+    port map(clk => clk,
     reset => reset,
     write => write,
     readA => readA_inside,
     readB => readB,
     WD => WD,
-    WAddr => WAddr,
+    WAddr => WA_inside,
     RA => RA_inside,
     RB => RB,
     QA => QA,
-    QB => QB);
+    QB => QB
+    --PC => PC
+    );
 
     ALU0: ALU
     generic map(N => N)
-    port map(clk => clk_1, -- clk
+    port map(clk => clk, -- clk
     reset => '0',
     en => '1',
-    op => "000",
+    op => op,
     a => ALU_inA,
     b => ALU_inB,
     y => tmp_out,
     Z_flag => Z_flag,
     N_flag => N_flag,
     O_flag => O_flag);
-
-    process(clk)
-    begin
-    if clk'event and clk = '1' then
-        if OE = '1' then
-            output_data <= tmp_out;
-        else
-            output_data <= (others => 'Z');
-                
-        end if ;
-        --output_data <= tmp_out when OE = '1' else (others => 'Z');
-    end if ;
-    end process;
-    reset_t <= reset;
+    output_data <= tmp_out when OE = '1' else (others => 'Z');
+    -- process(clk)
+    -- begin
+    -- if clk'event and clk = '1' then
+    --     if OE = '1' then
+    --         output_data <= tmp_out;
+    --     else
+    --         output_data <= (others => 'Z');
+    --     end if ;
+        
+    -- end if ;
+    -- end process;
+    --reset_t <= reset;
     
 end architecture data_flow; 
