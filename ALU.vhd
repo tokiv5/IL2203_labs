@@ -107,23 +107,27 @@ begin
         end case;
     end process;
 
-    process(clk, reset)
-    begin
-        if reset = '1' then
-            y <= conv_std_logic_vector(0,N);
-            Z_flag <= '0';
-            N_flag <= '0';
-            O_flag <= '0';
+    y <= tmp_y;
+    Z_flag <= tmp_z;
+    N_flag <= tmp_n;
+    O_flag <= tmp_o;
+    -- process(clk, reset)
+    -- begin
+    --     if reset = '1' then
+    --         y <= conv_std_logic_vector(0,N);
+    --         Z_flag <= '0';
+    --         N_flag <= '0';
+    --         O_flag <= '0';
             
-        elsif clk'event and (clk='1') then
-            if (en='1') then
-                y <= tmp_y;
-                Z_flag <= tmp_z;
-                N_flag <= tmp_n;
-                O_flag <= tmp_o;
-            end if;
-        end if;
-    end process;
+    --     elsif clk'event and (clk='1') then
+    --         if (en='1') then
+    --             y <= tmp_y;
+    --             Z_flag <= tmp_z;
+    --             N_flag <= tmp_n;
+    --             O_flag <= tmp_o;
+    --         end if;
+    --     end if;
+    -- end process;
 
 
 end structure ; -- structure

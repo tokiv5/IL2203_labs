@@ -62,14 +62,14 @@ begin
 spy_process: -- Spy process connects signals inside the hierarchy to signals in the test_bench (simulator dependent - only works in Modelsim)
    process
    begin
-       init_signal_spy("/test/dut/upc","/t_upc",1);
-       init_signal_spy("/test/dut/dp/rf_mem","/t_rf_mem",1);
+       init_signal_spy("/test/dut/dc0/pres_state","/t_upc",1);
+       init_signal_spy("/test/dut/d0/rf0/registers","/t_rf_mem",1);
        --init_signal_spy("/test/dut/z_flag","/t_z",1);
        --init_signal_spy("/test/dut/n_flag","/t_n",1);
        --init_signal_spy("/test/dut/o_flag","/t_o",1);
-	   init_signal_spy("/test/dut/L_z","/t_z",1);
-	   init_signal_spy("/test/dut/L_n","/t_n",1);
-	   init_signal_spy("/test/dut/L_o","/t_o",1);
+	   init_signal_spy("/test/dut/z_reg","/t_z",1);
+	   init_signal_spy("/test/dut/n_reg","/t_n",1);
+	   init_signal_spy("/test/dut/o_reg","/t_o",1);
        wait;
    end process spy_process;
 
@@ -92,11 +92,11 @@ test_all_instructions:
 		 wait for 1 ps;
 		 assert(Dout=t_rf_mem(rd_Reg)) report "ST: Dout has the wrong value" severity failure;
 		 assert(t_uPC="10") report "ST: Dout is set in the wrong clock cycle" severity failure;
-		 wait_for(2); -- skip PC+1
+		 wait_for(1); -- skip PC+1
 		 wait for 1 ps;
 		 assert(Address=t_rf_mem(wr_reg)) report "ST: Address has the wrong value" severity failure;
 		 assert(wren='1') report "ST: RW has the wrong value" severity failure;
-		 --wait_for(1); -- FI
+		 wait_for(1); -- FI
       end test_ST;
 	  procedure test_LD(signal instr:OUT instruction; wr_reg,rd_reg:integer) is
 	  begin
@@ -137,15 +137,19 @@ test_all_instructions:
 	   report "ST works OK";
 
        i(Din,iNOT,R4,R3,R0); 
+	   
 	       assert(t_rf_mem(4)="1111111111111110") report "NOT does not work" severity failure;
 		   report "NOT works OK";
        i(Din,iOR,R5,R4,R3);
+	   
 	       assert(t_rf_mem(5)="1111111111111111") report "OR does not work" severity failure;
 		   report "OR works OK";
        i(Din,iAND,R6,R5,R2);
+	   
 	       assert(t_rf_mem(6)="1111111100000010") report "AND does not work" severity failure;
 		   report "AND works OK";
        i(Din,iXOR,R6,R6,R5);
+	   
 	       assert(t_rf_mem(6)="0000000011111101") report "XOR does not work" severity failure;
 		   report "XOR works OK";
 	   test_LD(Din,4,0);

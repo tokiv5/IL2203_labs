@@ -23,7 +23,8 @@ architecture test_controller of test is
     constant instructions: INS:= (("0101000000000000"), -- Not R0 R0
                                   ("0000001000010000"), -- Add R1 R0 R2
                                   ("1101000000001000"), -- BRN 8
-                                  ("1111000000000100") -- BRA 4
+                                  ("1111000000000100"), -- BRA 4
+                                  ("1010100000010000") -- LDI R4 16
                                   ); 
 begin
     DUT: controller port map(clk, reset, out_clk, RW, IR_tmp, input_data);
