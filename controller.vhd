@@ -111,32 +111,13 @@ begin
         N_Reg when SEL = "010" else
         O_Reg when SEL = "001" else
         '0';
-    
-
-
-    process(LE, ALU_out, reset)
-    begin
-        --if clk'event and clk = '1' then
-            -- Latch registers
-        if reset = '1' then
-            Address <= (others => '0');
-            Dout <= (others => '0');
-            Z_reg <= '0';
-            N_reg <= '0';
-            O_reg <= '0';
-        else
-            if LE(3) = '1' then IR <= Din; end if;
-            if LE(2) = '1' then
-                Z_Reg <= ZFL;
-                N_Reg <= NFL;
-                O_Reg <= OFL;
-            end if;
-            if LE(1) = '1' then Address <= ALU_out; end if;
-            if LE(0) = '1' then Dout <= ALU_out; end if;
-        end if;
-    end process;
-
-    -- process(clk, reset, LE)
+    IR <= Din when LE(3) = '1';
+    -- Z_Reg <= ZFL when LE(2) = '1';
+    -- N_Reg <= NFL when LE(2) = '1';
+    -- O_Reg <= OFL when LE(2) = '1';
+    -- Address <= ALU_out when LE(1) = '1';
+    -- Dout <= ALU_out when LE(0) = '1';
+    -- process(LE, reset)
     -- begin
     --     --if clk'event and clk = '1' then
     --         -- Latch registers
@@ -146,8 +127,8 @@ begin
     --         Z_reg <= '0';
     --         N_reg <= '0';
     --         O_reg <= '0';
-    --     elsif LE(3) = '1' then IR <= Din;
-    --     elsif clk'event and clk = '1' then
+    --     else
+    --         if LE(3) = '1' then IR <= Din; end if;
     --         if LE(2) = '1' then
     --             Z_Reg <= ZFL;
     --             N_Reg <= NFL;
@@ -157,4 +138,27 @@ begin
     --         if LE(0) = '1' then Dout <= ALU_out; end if;
     --     end if;
     -- end process;
+
+    process(clk, reset)
+    begin
+        --if clk'event and clk = '1' then
+            -- Latch registers
+        if reset = '1' then
+            Address <= (others => '0');
+            Dout <= (others => '0');
+            Z_reg <= '0';
+            N_reg <= '0';
+            O_reg <= '0';
+        
+        elsif clk'event and clk = '1' then
+        --     if LE(3) = '1' then IR <= Din; end if;
+            if LE(2) = '1' then
+                Z_Reg <= ZFL;
+                N_Reg <= NFL;
+                O_Reg <= OFL;
+            end if;
+            if LE(1) = '1' then Address <= ALU_out; end if;
+            if LE(0) = '1' then Dout <= ALU_out; end if;
+        end if;
+    end process;
 end behave; -- behave

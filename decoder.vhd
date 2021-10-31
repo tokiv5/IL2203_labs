@@ -56,52 +56,52 @@ architecture structure of decoder is
 
     -- IE, ByPass, WA, RA, RB, op, OE, RW, SEL. LE
     constant uADD: uPr:= (
-        ('0', "000", '0', '0', '0', opADD, '1', '0', ZFL, L_IR),
-        ('0', "000", '1','1','1', opADD, '1', '0' ,ZFL , L_Flag), -- FO
-        ('0', "011", '1','1','0', opINC, '1', '0' ,ZFL, L_Addr), -- EX
-        ('0', "000", '0','0','0', opMOV,'1', '0', ZFL, L_none) -- WA
+        ('0', "000", '0', '0', '0', opADD, '1', '1', ZFL, L_IR),
+        ('0', "000", '1','1','1', opADD, '1', '1' ,ZFL , L_Flag), -- FO
+        ('0', "011", '1','1','0', opINC, '1', '1' ,ZFL, L_Addr), -- EX
+        ('0', "000", '0','0','0', opMOV,'1', '1', ZFL, L_none) -- WA
     );
 
     constant uSUB: uPr:= (
-        ('0', "000", '0', '0', '0', opADD, '1', '0', ZFL, L_IR),
-        ('0', "000", '1','1','1', opSUB, '1', '0' ,ZFL , L_Flag), -- FO
-        ('0', "011", '1','1','0', opINC, '1', '0' ,ZFL, L_Addr), -- EX
-        ('0', "000", '0','0','0', opMOV,'1', '0', ZFL, L_none) -- WA
+        ('0', "000", '0', '0', '0', opADD, '1', '1', ZFL, L_IR),
+        ('0', "000", '1','1','1', opSUB, '1', '1' ,ZFL , L_Flag), -- FO
+        ('0', "011", '1','1','0', opINC, '1', '1' ,ZFL, L_Addr), -- EX
+        ('0', "000", '0','0','0', opMOV,'1', '1', ZFL, L_none) -- WA
     );
 
     constant uAND: uPr:= (
-        ('0', "000", '0', '0', '0', opADD, '1', '0', ZFL, L_IR),
-        ('0', "000", '1','1','1', opAND, '1', '0' ,ZFL , L_Flag), -- FO
-        ('0', "011", '1','1','0', opINC, '1', '0' ,ZFL, L_Addr), -- EX
-        ('0', "000", '0','0','0', opMOV,'1', '0', ZFL, L_none) -- WA
+        ('0', "000", '0', '0', '0', opADD, '1', '1', ZFL, L_IR),
+        ('0', "000", '1','1','1', opAND, '1', '1' ,ZFL , L_Flag), -- FO
+        ('0', "011", '1','1','0', opINC, '1', '1' ,ZFL, L_Addr), -- EX
+        ('0', "000", '0','0','0', opMOV,'1', '1', ZFL, L_none) -- WA
     );
 
     constant uOR: uPr:= (
-        ('0', "000", '0', '0', '0', opADD, '1', '0', ZFL, L_IR),
-        ('0', "000", '1','1','1', opOR, '1', '0' ,ZFL , L_Flag), -- FO
-        ('0', "011", '1','1','0', opINC, '1', '0' ,ZFL, L_Addr), -- EX
-        ('0', "000", '0','0','0', opMOV,'1', '0', ZFL, L_none) -- WA
+        ('0', "000", '0', '0', '0', opADD, '1', '1', ZFL, L_IR),
+        ('0', "000", '1','1','1', opOR, '1', '1' ,ZFL , L_Flag), -- FO
+        ('0', "011", '1','1','0', opINC, '1', '1' ,ZFL, L_Addr), -- EX
+        ('0', "000", '0','0','0', opMOV,'1', '1', ZFL, L_none) -- WA
     );
     
     constant uXOR: uPr:= (
-        ('0', "000", '0', '0', '0', opADD, '1', '0', ZFL, L_IR),
-        ('0', "000", '1','1','1', opXOR, '1', '0' ,ZFL , L_Flag), -- FO
-        ('0', "011", '1','1','0', opINC, '1', '0' ,ZFL, L_Addr), -- EX
-        ('0', "000", '0','0','0', opMOV,'1', '0', ZFL, L_none) -- WA
+        ('0', "000", '0', '0', '0', opADD, '1', '1', ZFL, L_IR),
+        ('0', "000", '1','1','1', opXOR, '1', '1' ,ZFL , L_Flag), -- FO
+        ('0', "011", '1','1','0', opINC, '1', '1' ,ZFL, L_Addr), -- EX
+        ('0', "000", '0','0','0', opMOV,'1', '1', ZFL, L_none) -- WA
     );
 
     constant uNOT: uPr:= (
-        ('0', "000", '0', '0', '0', opADD, '1', '0', ZFL, L_IR),
-        ('0', "000", '1','1','1', opNOT, '1', '0' ,ZFL , L_Flag), -- FO
-        ('0', "011", '1','1','0', opINC, '1', '0' ,ZFL, L_Addr), -- EX
-        ('0', "000", '0','0','0', opMOV,'1', '0', ZFL, L_none) -- WA
+        ('0', "000", '0', '0', '0', opADD, '1', '1', ZFL, L_IR),
+        ('0', "000", '1','1','1', opNOT, '1', '1' ,ZFL , L_Flag), -- FO
+        ('0', "011", '1','1','0', opINC, '1', '1' ,ZFL, L_Addr), -- EX
+        ('0', "000", '0','0','0', opMOV,'1', '1', ZFL, L_none) -- WA
     );
 
     constant uMOV: uPr:= (
-        ('0', "000", '0', '0', '0', opADD, '1', '0', ZFL, L_IR),
-        ('0', "000", '1','1','1', opMOV, '1', '0' ,ZFL , L_Flag), -- FO
-        ('0', "011", '1','1','0', opINC, '1', '0' ,ZFL, L_Addr), -- EX
-        ('0', "000", '0','0','0', opMOV,'1', '0', ZFL, L_none) -- WA
+        ('0', "000", '0', '0', '0', opADD, '1', '1', ZFL, L_IR),
+        ('0', "000", '1','1','1', opMOV, '1', '1' ,ZFL , L_Flag), -- FO
+        ('0', "011", '1','1','0', opINC, '1', '1' ,ZFL, L_Addr), -- EX
+        ('0', "000", '0','0','0', opMOV,'1', '1', ZFL, L_none) -- WA
     );
 
     -- constant uINC: uPr:= (
@@ -112,73 +112,74 @@ architecture structure of decoder is
     -- );
 
     constant uNOP: uPr:= (
-        ('0', "000", '0', '0', '0', opINC, '1', '0', ZFL, L_IR),
-        ('0', "011", '1','1','0', opINC, '1', '0' ,ZFL, L_Addr), -- EX
-        ('0', "000", '0','0','0', opMOV, '1', '0' ,ZFL , L_none), -- FO
-        ('0', "000", '0','0','0', opMOV,'1', '0', ZFL, L_none) -- WA
+        ('0', "000", '0', '0', '0', opINC, '1', '1', ZFL, L_IR),
+        ('0', "011", '1','1','0', opINC, '1', '1' ,ZFL, L_Addr), -- EX
+        ('0', "000", '0','0','0', opMOV, '1', '1' ,ZFL , L_none), -- FO
+        ('0', "000", '0','0','0', opMOV,'1', '1', ZFL, L_none) -- WA
     );
 
     constant uBRZ_F: uPr:= (
-        ('0', "000", '0', '0', '0', opMOV, '1', '0', ZFL, L_IR),
-        ('0', "011", '1', '1','0', opINC, '1', '0', ZFL, L_Addr),
-        ('0', "000", '0', '0', '0', opMOV, '1', '0', ZFL, L_none),
-        ('0', "000", '0', '0','0', opMOV,'1', '0', ZFL, L_none)
+        ('0', "000", '0', '0', '0', opMOV, '1', '1', ZFL, L_IR),
+        ('0', "011", '1', '1','0', opINC, '1', '1', ZFL, L_Addr),
+        ('0', "000", '0', '0', '0', opMOV, '1', '1', ZFL, L_none),
+        ('0', "000", '0', '0','0', opMOV,'1', '1', ZFL, L_none)
     );
 
     constant uBRZ_T: uPr:= (
-        ('0', "000", '0', '0', '0', opMOV, '1', '0', ZFL, L_IR),
-        ('0', "011", '1', '1','0', opADD, '1', '0', ZFL, L_Addr),
-        ('0', "000", '0', '0', '0', opMOV, '1', '0', ZFL, L_none),
-        ('0', "000", '0', '0','0', opMOV,'1', '0', ZFL, L_none)
+        ('0', "000", '0', '0', '0', opMOV, '1', '1', ZFL, L_IR),
+        ('0', "011", '1', '1','0', opADD, '1', '1', ZFL, L_Addr),
+        ('0', "000", '0', '0', '0', opMOV, '1', '1', ZFL, L_none),
+        ('0', "000", '0', '0','0', opMOV,'1', '1', ZFL, L_none)
     );
 
     constant uBRN_F: uPr:= (
-        ('0', "000", '0', '0', '0', opMOV, '1', '0', ZFL, L_IR),
-        ('0', "011", '1', '1','0', opINC, '1', '0', NFL, L_Addr),
-        ('0', "000", '0', '0', '0', opMOV, '1', '0', NFL, L_none),
-        ('0', "000", '0', '0','0', opMOV,'1', '0', ZFL, L_none)
+        ('0', "000", '0', '0', '0', opMOV, '1', '1', ZFL, L_IR),
+        ('0', "011", '1', '1','0', opINC, '1', '1', NFL, L_Addr),
+        ('0', "000", '0', '0', '0', opMOV, '1', '1', NFL, L_none),
+        ('0', "000", '0', '0','0', opMOV,'1', '1', ZFL, L_none)
     );
 
     constant uBRN_T: uPr:= (
-        ('0', "000", '0', '0', '0', opMOV, '1', '0', ZFL, L_IR),
-        ('0', "011", '1', '1','0', opADD, '1', '0', NFL, L_Addr),
-        ('0', "000", '0', '0', '0', opMOV, '1', '0', NFL, L_none),
-        ('0', "000", '0', '0','0', opMOV,'1', '0', ZFL, L_none)
+        ('0', "000", '0', '0', '0', opMOV, '1', '1', ZFL, L_IR),
+        ('0', "011", '1', '1','0', opADD, '1', '1', NFL, L_Addr),
+        ('0', "000", '0', '0', '0', opMOV, '1', '1', NFL, L_none),
+        ('0', "000", '0', '0','0', opMOV,'1', '1', ZFL, L_none)
     );
 
     constant uBRO_F: uPr:= (
-        ('0', "000", '0', '0', '0', opMOV, '1', '0', ZFL, L_IR),
-        ('0', "011", '1', '1','0', opINC, '1', '0', OFL, L_Addr),
-        ('0', "000", '0', '0', '0', opMOV, '1', '0', OFL, L_none),
-        ('0', "000", '0', '0','0', opMOV,'1', '0', ZFL, L_none)
+        ('0', "000", '0', '0', '0', opMOV, '1', '1', ZFL, L_IR),
+        ('0', "011", '1', '1','0', opINC, '1', '1', OFL, L_Addr),
+        ('0', "000", '0', '0', '0', opMOV, '1', '1', OFL, L_none),
+        ('0', "000", '0', '0','0', opMOV,'1', '1', ZFL, L_none)
     );
     
     constant uBRO_T: uPr:= (
-        ('0', "000", '0', '0', '0', opMOV, '1', '0', ZFL, L_IR),
-        ('0', "011", '1', '1','0', opADD, '1', '0', OFL, L_Addr),
-        ('0', "000", '0', '0', '0', opMOV, '1', '0', OFL, L_none),
-        ('0', "000", '0', '0','0', opMOV,'1', '0', ZFL, L_none)
+        ('0', "000", '0', '0', '0', opMOV, '1', '1', ZFL, L_IR),
+        ('0', "011", '1', '1','0', opADD, '1', '1', OFL, L_Addr),
+        ('0', "000", '0', '0', '0', opMOV, '1', '1', OFL, L_none),
+        ('0', "000", '0', '0','0', opMOV,'1', '1', ZFL, L_none)
     );
 
     constant uBRA: uPr:= ( 
-        ('0', "000", '0', '0', '0', opMOV, '1', '0', ZFL, L_IR),
-        ('0', "011", '1', '1', '0', opADD, '1', '0' ,ZFL, L_Addr),
-        ('0', "000", '0', '0', '0', opMOV, '1', '0', ZFL, L_none),
-        ('0', "000", '0', '0', '0', opMOV,'1', '0', ZFL, L_none)
+        ('0', "000", '0', '0', '0', opMOV, '1', '1', ZFL, L_IR),
+        ('0', "011", '1', '1', '0', opADD, '1', '1' ,ZFL, L_Addr),
+        ('0', "000", '0', '0', '0', opMOV, '1', '1', ZFL, L_none),
+        ('0', "000", '0', '0', '0', opMOV,'1', '1', ZFL, L_none)
     );
 
     constant uST: uPr:= (
         ('0', "000", '0', '0', '0', opMOV, '1', '1', ZFL, L_IR),
         ('0', "000", '0', '0', '1', opADD, '1', '1', ZFL, L_Dout),
-        ('0', "000", '0', '1', '0', opMOV, '1', '0', ZFL, L_Addr),
-        ('0', "011", '1', '1', '0', opINC, '1', '1', ZFL, L_Addr)
+        ('0', "000", '0', '1', '0', opMOV, '1', '1', ZFL, L_Addr),
+        ('0', "011", '1', '1', '0', opINC, '1', '0', ZFL, L_Addr)
     );
 
     constant uLD: uPr:= (
         ('0', "000", '0', '0', '0', opMOV, '1', '1', ZFL, L_IR),
         ('0', "000", '0', '1', '0', opMOV, '1', '1', ZFL, L_Addr),
-        ('1', "000", '1', '0', '0', opMOV, '1', '1', ZFL, L_none),
-        ('0', "011", '1', '1', '0', opINC, '1', '1', ZFL, L_Addr)
+        ('0', "011", '1', '1', '0', opINC, '1', '1', ZFL, L_Addr),
+        ('1', "000", '1', '0', '0', opMOV, '1', '1', ZFL, L_none)
+        
     );
 
     constant uLDI: uPr:= (
@@ -215,32 +216,36 @@ begin
     begin
         if reset = '1' then
             pres_state <= "00";
-            IE <= '0';
-            byPassA <= '0';
-            byPassB <= '0';
-            byPassW <= '0';
-            WA_enable <= '0';
-            RA_enable <= '0';
-            RB_enable <= '0';
-            op <= "000";
-            OE <= '0';
-            RW <= '0';
-            SEL <= ZFL;
-            LE <= L_IR;
+            -- IE <= '0';
+            -- byPassA <= '0';
+            -- byPassB <= '0';
+            -- byPassW <= '0';
+            -- WA_enable <= '0';
+            -- RA_enable <= '0';
+            -- RB_enable <= '0';
+            -- op <= "000";
+            -- OE <= '0';
+            -- RW <= '0';
+            -- SEL <= ZFL;
+            -- LE <= L_IR;
         elsif clk'event and clk = '1' then
-            IE <= pres_uPr(conv_integer(pres_state)).IE;
-            byPassA <= pres_uPr(conv_integer(pres_state)).bypass(2);
-            byPassB <= pres_uPr(conv_integer(pres_state)).bypass(1);
-            byPassW <= pres_uPr(conv_integer(pres_state)).bypass(0);
-            WA_enable <= pres_uPr(conv_integer(pres_state)).WA_en;
-            RA_enable <= pres_uPr(conv_integer(pres_state)).RA_en;
-            RB_enable <= pres_uPr(conv_integer(pres_state)).RB_en;
-            op <= pres_uPr(conv_integer(pres_state)).ALU;
-            OE <= pres_uPr(conv_integer(pres_state)).OE;
-            RW <= pres_uPr(conv_integer(pres_state)).RW;
-            SEL <= pres_uPr(conv_integer(pres_state)).SEL;
-            LE <= pres_uPr(conv_integer(pres_state)).LE;
             pres_state <= pres_state + 1;
         end if; 
+    end process;
+
+    process(pres_state, pres_uPr)
+    begin
+        IE <= pres_uPr(conv_integer(pres_state)).IE;
+        byPassA <= pres_uPr(conv_integer(pres_state)).bypass(2);
+        byPassB <= pres_uPr(conv_integer(pres_state)).bypass(1);
+        byPassW <= pres_uPr(conv_integer(pres_state)).bypass(0);
+        WA_enable <= pres_uPr(conv_integer(pres_state)).WA_en;
+        RA_enable <= pres_uPr(conv_integer(pres_state)).RA_en;
+        RB_enable <= pres_uPr(conv_integer(pres_state)).RB_en;
+        op <= pres_uPr(conv_integer(pres_state)).ALU;
+        OE <= pres_uPr(conv_integer(pres_state)).OE;
+        RW <= pres_uPr(conv_integer(pres_state)).RW;
+        SEL <= pres_uPr(conv_integer(pres_state)).SEL;
+        LE <= pres_uPr(conv_integer(pres_state)).LE;
     end process;
 end structure; -- structure
