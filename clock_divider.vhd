@@ -16,7 +16,7 @@ begin
     process(clk_50M)
     begin
         if (clk_50M'event and clk_50M = '1') then
-            counter <= counter + conv_std_logic_vector(1,6);
+            counter <= counter + conv_std_logic_vector(16,6);
         end if;
         clk_1 <= counter(26);
     end process;

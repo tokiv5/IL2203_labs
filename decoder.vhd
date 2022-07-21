@@ -10,7 +10,8 @@ entity decoder is
         Z_reg, N_reg, O_reg, clk, reset: IN std_logic; --From flag mux
         RA_enable, RB_enable, WA_enable, byPassA, byPassB, byPassW, IE, OE, RW: OUT std_logic; -- uInstruction
         op, SEL: OUT std_logic_vector(2 downto 0); -- uInstruction for ALU
-        LE: OUT std_logic_vector(3 downto 0) -- Latch signal for IR, flag, Addr and Dout
+        LE: OUT std_logic_vector(3 downto 0); -- Latch signal for IR, flag, Addr and Dout
+        uPC: OUT std_logic_vector(1 downto 0)
     );
 end entity decoder;
 
@@ -167,11 +168,18 @@ architecture structure of decoder is
         ('0', "000", '0', '0', '0', opMOV,'1', '1', ZFL, L_none)
     );
 
+    -- constant uST: uPr:= (
+    --     ('0', "000", '0', '0', '0', opMOV, '1', '1', ZFL, L_IR),
+    --     ('0', "000", '0', '0', '1', opADD, '1', '1', ZFL, L_Dout),
+    --     ('0', "000", '0', '1', '0', opMOV, '1', '1', ZFL, L_Addr),
+    --     ('0', "011", '1', '1', '0', opINC, '1', '0', ZFL, L_Addr)
+    -- );
+
     constant uST: uPr:= (
-        ('0', "000", '0', '0', '0', opMOV, '1', '1', ZFL, L_IR),
+        ('0', "000", '0', '0', '0', opMOV, '1', '0', ZFL, L_IR),
+        ('0', "011", '1', '1', '0', opINC, '1', '1', ZFL, L_Addr),
         ('0', "000", '0', '0', '1', opADD, '1', '1', ZFL, L_Dout),
-        ('0', "000", '0', '1', '0', opMOV, '1', '1', ZFL, L_Addr),
-        ('0', "011", '1', '1', '0', opINC, '1', '0', ZFL, L_Addr)
+        ('0', "000", '0', '1', '0', opMOV, '1', '1', ZFL, L_Addr)
     );
 
     constant uLD: uPr:= (
@@ -211,6 +219,7 @@ begin
         uBRA when ins_OP = "1111" else
         uNOP;
     
+    uPC <= pres_state;
     -- IE, ByPass, WA, RA, RB, op, OE, RW, SEL. LE
     process(clk, reset)
     begin

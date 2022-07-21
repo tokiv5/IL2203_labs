@@ -31,5 +31,6 @@ package assembly_instructions is
     constant R6: reg_code:= "110";
     constant R7: reg_code:= "111";
     constant Tail3: std_logic_vector(2 downto 0):= "000";
+    constant Tail6: std_logic_vector(5 downto 0):= "000000";
     constant Tail8: std_logic_vector(7 downto 0):= "00000000";
 end assembly_instructions;

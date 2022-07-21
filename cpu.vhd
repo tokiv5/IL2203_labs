@@ -16,6 +16,7 @@ architecture behave of cpu is
     -- Signals for registers
     signal IR: std_logic_vector(15 downto 0);
     signal ALU_out: std_logic_vector(N-1 downto 0);
+    --signal Address_tmp, Dout_tmp: std_logic_vector(N-1 downto 0) := (others => '0')
     signal ZFL, NFL, OFL, flags, out_clk: std_logic;
     signal SEL: std_logic_vector(2 downto 0);
     signal LE: std_logic_vector(3 downto 0);
@@ -23,6 +24,7 @@ architecture behave of cpu is
     signal offset_tmp: std_logic_vector(15 downto 0);
     signal w_en, RA_en, RB_en, IE, OE, byPassA, byPassB, byPassW, Z_Reg, N_Reg, O_Reg: std_logic;
     signal op: std_logic_vector(2 downto 0);
+    signal uPC: std_logic_vector(1 downto 0);
 
     component datapath
         generic(N:integer:=4;
@@ -46,7 +48,8 @@ architecture behave of cpu is
             Z_reg, N_reg, O_reg, clk, reset: IN std_logic; --From flag mux
             RA_enable, RB_enable, WA_enable, byPassA, byPassB, byPassW, IE, OE, RW: OUT std_logic; -- uInstruction
             op, SEL: OUT std_logic_vector(2 downto 0); -- uInstruction for ALU
-            LE: OUT std_logic_vector(3 downto 0) -- Latch signal for IR, flag, Addr and Dout
+            LE: OUT std_logic_vector(3 downto 0); -- Latch signal for IR, flag, Addr and Dout
+            uPC: OUT std_logic_vector(1 downto 0)
         );
     end component;
 
@@ -103,7 +106,8 @@ begin
         RW => RW,
         op => op,
         SEL => SEL,
-        LE => LE
+        LE => LE,
+        uPC => uPC
     );
     -- This line should be deleted after memory is implmented
     -- IR <= Din;
@@ -111,7 +115,23 @@ begin
         N_Reg when SEL = "010" else
         O_Reg when SEL = "001" else
         '0';
-    IR <= Din when LE(3) = '1';
+
+    -- process(LE)
+    -- begin
+    --     if LE(3) = '1' then IR <= Din; end if;
+    --     if LE(2) = '1' then
+    --         Z_Reg <= ZFL;
+    --         N_Reg <= NFL;
+    --         O_Reg <= OFL;
+    --     end if;
+    --     if LE(1) = '1' then Address <= ALU_out; end if;
+    --     if LE(0) = '1' then Dout <= ALU_out; end if;
+    -- end process;
+    -- IR <= Din when LE(3) = '1' else IR;
+    -- Address_tmp <= ALU_out when LE(1) = '1' else Address_tmp;
+    -- Dout_tmp <= ALU_out when LE(0) = '1' else Dout_tmp;
+    -- Address <= Address_tmp;
+    -- Dout <= Dout_tmp;
     -- Z_Reg <= ZFL when LE(2) = '1';
     -- N_Reg <= NFL when LE(2) = '1';
     -- O_Reg <= OFL when LE(2) = '1';
@@ -144,6 +164,7 @@ begin
         --if clk'event and clk = '1' then
             -- Latch registers
         if reset = '1' then
+            IR <= (others => '0');
             Address <= (others => '0');
             Dout <= (others => '0');
             Z_reg <= '0';
@@ -151,7 +172,7 @@ begin
             O_reg <= '0';
         
         elsif clk'event and clk = '1' then
-        --     if LE(3) = '1' then IR <= Din; end if;
+            if LE(3) = '1' then IR <= Din; end if;
             if LE(2) = '1' then
                 Z_Reg <= ZFL;
                 N_Reg <= NFL;
